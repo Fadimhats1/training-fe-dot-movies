@@ -13,12 +13,7 @@ type CardPropsType = {
 const Card = ({ imageSrc, dataMovies }: CardPropsType) => {
   if (dataMovies) {
     return (
-      <Link
-        href={{
-          pathname: `/detail/${dataMovies.id}`,
-          query: { data: JSON.stringify(dataMovies) },
-        }}
-      >
+      <Link href={`/detail/${dataMovies.id}`}>
         <div
           className={`flex flex-col relative rounded p-1 bg-gray-200 shadow-sm hover:shadow-md ease-in-out duration-300 cursor-pointer`}
         >

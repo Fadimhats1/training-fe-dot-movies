@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import Card from '../../components/Card';
 import PageLayout from '../../components/Layout/PageLayout';
 import { LoadingOutlined } from '@ant-design/icons';
+import { useLocalStorage } from '../../hooks/useLocalStorage';
 const colors = [
   'magenta',
   'red',
@@ -18,11 +19,18 @@ const colors = [
 ];
 
 const DetailMovie = () => {
-  const ROUTER = useRouter();
-  const QUERY: any = ROUTER.query;
-  let _dataDetailMovie;
-  if (QUERY.data) {
-    _dataDetailMovie = JSON.parse(QUERY.data);
+  const { data: movies, isLoading } = useLocalStorage({ key: 'movies' });
+  const router = useRouter();
+  const idDetail = parseInt(router.query.id as string);
+  if (!isLoading) {
+    let _dataDetailMovie: any;
+    movies.forEach((elementPage: any) => {
+      elementPage.results.forEach((elementMovies: any) => {
+        if (elementMovies.id === idDetail) {
+          _dataDetailMovie = elementMovies.movie_detail;
+        }
+      });
+    });
 
     const TAGS = _dataDetailMovie.genres.map(
       (d: { id: number; name: string }, index: number) => (
