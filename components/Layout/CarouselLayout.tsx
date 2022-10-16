@@ -1,20 +1,16 @@
 import React from 'react';
 import { Breadcrumb, Layout, Carousel, Tabs, Row, Col, Pagination } from 'antd';
+import CarouselItem from '../CarouselItem';
 
-const contentStyle: React.CSSProperties = {
-  color: '#fff',
+type CarouselPropsType = {
+  carouselHeight?: number;
 };
-
-const CarouselLayout = () => {
-  return (
-    <Carousel autoplay>
-      <div>
-        <div className="h-36 bg-blue-500 flex items-center justify-center">
-          <h3 style={contentStyle}>2</h3>
-        </div>
-      </div>
-    </Carousel>
-  );
+const CarouselLayout = ({ carouselHeight }: CarouselPropsType) => {
+  let _carouselItem: JSX.Element[] = [];
+  for (let i = 0; i < 10; i++) {
+    _carouselItem.push(<CarouselItem key={i + 1} carouselHeight={100} />);
+  }
+  return <Carousel>{_carouselItem}</Carousel>;
 };
 
 export default CarouselLayout;

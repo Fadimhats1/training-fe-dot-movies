@@ -7,10 +7,17 @@ module.exports = {
   theme: {
     extend: {
       screens: {
-        xs: '320px',
+        mobS: '320px',
+        mobM: '375px',
+        mobL: '576px',
+        mobXL: '640px',
+        tablet: '768px',
+        tabletL: '992px',
+        laptop: '1024px',
+        laptopL: '1440px',
       },
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/line-clamp')],
   important: true,
 };

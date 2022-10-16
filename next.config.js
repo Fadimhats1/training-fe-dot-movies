@@ -2,7 +2,13 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  images: { domains: ['os.alipayobjects.com'] },
+  images: {
+    domains: [
+      'os.alipayobjects.com',
+      'static.wikia.nocookie.net',
+      'image.tmdb.org',
+    ],
+  },
 };
 
 module.exports = nextConfig;
