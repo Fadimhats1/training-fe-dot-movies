@@ -19,19 +19,20 @@ const colors = [
 ];
 
 const DetailMovie = () => {
-  const { data: movies, isLoading } = useLocalStorage({ key: 'movies' });
+  const { data: movies } = useLocalStorage({ key: 'movies' });
   const router = useRouter();
   const idDetail = parseInt(router.query.id as string);
-  if (!isLoading) {
-    let _dataDetailMovie: any;
-    movies.forEach((elementPage: any) => {
-      elementPage.results.forEach((elementMovies: any) => {
-        if (elementMovies.id === idDetail) {
-          _dataDetailMovie = elementMovies.movie_detail;
-        }
-      });
-    });
 
+  let _dataDetailMovie: any;
+  if (movies) {
+    movies.forEach((elementData: any) => {
+      if (elementData.id == idDetail) {
+        _dataDetailMovie = elementData.movie_detail;
+      }
+    });
+  }
+
+  if (_dataDetailMovie) {
     const TAGS = _dataDetailMovie.genres.map(
       (d: { id: number; name: string }, index: number) => (
         <Tag key={d.id} color={colors[index]}>
@@ -64,7 +65,6 @@ const DetailMovie = () => {
           );
       }
     );
-
     return (
       <PageLayout>
         {_dataDetailMovie ? (
@@ -79,18 +79,15 @@ const DetailMovie = () => {
                 {_dataDetailMovie.title}
               </h3>
             </div>
-
             <div className="bg-gray-200 rounded p-4 flex flex-col gap-4 drop-shadow-md">
               <div>
                 <h4 className="text-xl font-bold">Overview:</h4>
                 <p>{_dataDetailMovie.overview}</p>
               </div>
-
               <div>
                 <h4 className="text-xl font-bold">Tags:</h4>
                 <div className="mt-2">{TAGS}</div>
               </div>
-
               <div className="flex justify-between flex-wrap gap-2">
                 <div>
                   <h4 className="text-xl font-bold">Vote:</h4>
@@ -120,7 +117,6 @@ const DetailMovie = () => {
                   </p>
                 </div>
               </div>
-
               <div className="flex justify-between flex-wrap gap-2">
                 <div>
                   <h4 className="text-xl font-bold">Production:</h4>

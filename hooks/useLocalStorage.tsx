@@ -17,6 +17,7 @@ export function useLocalStorage({
 
   useEffect(() => {
     valueHandle(initialValue, _keyRef.current, _loadingRef, setValue);
+    _loadingRef.current = false;
   }, []);
 
   const setData = useCallback(async (_value: any) => {
@@ -61,7 +62,6 @@ const valueHandle = async (
     } else {
       setValue(JSON.parse(_data));
     }
-    _isLoading.current = false;
   } catch (error) {
     console.log(error);
   }
