@@ -1,6 +1,5 @@
-import React from 'react';
+import { Typography } from 'antd';
 import PageLayout from '../components/Layout/PageLayout';
-import { Button, Drawer, Typography } from 'antd';
 
 const PageNotFound = () => {
   return (

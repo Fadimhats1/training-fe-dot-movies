@@ -1,23 +1,24 @@
+import Router from 'next/router';
 import React, { useCallback, useEffect } from 'react';
 import { useState } from 'react';
 import { useRef } from 'react';
+import { MoviesTypes } from '../services/model/data.model';
 
 type useLocalStoragePropsType = {
   key: string;
   initialValue?: any | null;
 };
 
-export function useLocalStorage({
+export function useStorage({
   key,
   initialValue = null,
 }: useLocalStoragePropsType) {
   const _keyRef = useRef<string>(key);
   const _loadingRef = useRef<boolean>(true);
-  const [value, setValue] = useState<any | null>(null);
+  const [value, setValue] = useState<MoviesTypes[] | null>(null);
 
   useEffect(() => {
     valueHandle(initialValue, _keyRef.current, _loadingRef, setValue);
-    _loadingRef.current = false;
   }, []);
 
   const setData = useCallback(async (_value: any) => {
@@ -40,7 +41,7 @@ const valueHandle = async (
   _initialValue: any | null,
   key: string,
   _isLoading: React.MutableRefObject<boolean>,
-  setValue: React.Dispatch<React.SetStateAction<any | null>>
+  setValue: React.Dispatch<React.SetStateAction<MoviesTypes[] | null>>
 ) => {
   try {
     let _data = localStorage.getItem(key);
@@ -50,18 +51,23 @@ const valueHandle = async (
       if (_initialValue) {
         // check initial value not null when inital value is a variable or function
         // initial value is not null either function or any
-        if (_initialValue instanceof Function) {
-          _isLoading.current = true;
-          _dataSetLocalStorage = await _initialValue();
+        if (navigator.onLine) {
+          if (_initialValue instanceof Function) {
+            _isLoading.current = true;
+            _dataSetLocalStorage = await _initialValue();
+          } else {
+            _dataSetLocalStorage = _initialValue;
+          }
+          localStorage.setItem(key, JSON.stringify(_dataSetLocalStorage));
         } else {
-          _dataSetLocalStorage = _initialValue;
+          Router.push('/offline');
         }
-        localStorage.setItem(key, JSON.stringify(_dataSetLocalStorage));
       }
       setValue(_dataSetLocalStorage);
     } else {
       setValue(JSON.parse(_data));
     }
+    _isLoading.current = false;
   } catch (error) {
     console.log(error);
   }

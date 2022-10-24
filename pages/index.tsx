@@ -1,38 +1,19 @@
 import { LoadingOutlined } from '@ant-design/icons';
 import { Pagination, PaginationProps, Typography } from 'antd';
-import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import ListCardLayout from '../components/Layout/ListCardLayout';
 import PageLayout from '../components/Layout/PageLayout';
-import { useLocalStorage } from '../hooks/useLocalStorage';
-
-const getFromApi = async () => {
-  let data: any[] = [];
-
-  for (let i = 1; i <= 10; i++) {
-    let _url = `https://api.themoviedb.org/3/movie/popular?api_key=3c4c3212a043d7d95ef1c284b8c22a56&language=en-US&page=${i}`;
-    const _temp = await axios.get(_url);
-    _temp.data.results.forEach((element: any) => {
-      data.push(element);
-    });
-  }
-  const _totalResults = data.length; // to get detail data from movie
-  let newData = [];
-  for (let i = 0; i < _totalResults; i++) {
-    let _url = `https://api.themoviedb.org/3/movie/${data[i].id}?api_key=3c4c3212a043d7d95ef1c284b8c22a56&language=en-US`;
-    const _temp = await axios.get(_url);
-    newData.push({ ...data[i], movie_detail: _temp.data });
-  }
-  return newData;
-};
+import { useStorage } from '../src/hooks/useStorage';
+import { MoviesTypes } from '../src/services/model/data.model';
+import { getFromApi } from '../src/services/utils';
 
 const Home = () => {
   const router = useRouter();
   const querySearch = router.query;
   const [page, setPage] = useState(0);
   const [dataPerPage, setDataPerPage] = useState(10);
-  const { data: movies, isLoading } = useLocalStorage({
+  const { data: movies, isLoading } = useStorage({
     key: 'movies',
     initialValue: async () => await getFromApi(),
   });
@@ -46,7 +27,7 @@ const Home = () => {
     setDataPerPage(size);
   };
   const moviesDataPerPageHandle = (
-    movies: any,
+    movies: MoviesTypes[],
     page: number,
     dataPerPage: number
   ) => {
@@ -64,8 +45,7 @@ const Home = () => {
       return;
     }
     setPage(parseInt(querySearch.page as string));
-  }, [querySearch.page]);
-
+  }, [querySearch.page, router.isReady]);
   if (!isLoading && page) {
     return (
       <PageLayout>
@@ -82,8 +62,9 @@ const Home = () => {
             <Pagination
               responsive
               defaultCurrent={page}
-              total={movies.length}
+              total={movies?.length}
               hideOnSinglePage
+              pageSizeOptions={[10, 20, 30]}
               onChange={pageHandle}
               onShowSizeChange={pageSizeHandle}
             />

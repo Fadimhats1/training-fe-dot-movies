@@ -1,16 +1,9 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { CardPropsTypes } from '../src/services/model/data.model';
 
-type CardPropsType = {
-  imageSrc: string;
-  title?: string;
-  rating?: number | null;
-  dataMovies?: any;
-  movieOrigin?: string | null;
-};
-
-const Card = ({ imageSrc, dataMovies }: CardPropsType) => {
+const Card = ({ imageSrc, dataMovies }: CardPropsTypes) => {
   if (dataMovies) {
     return (
       <Link href={`/detail/${dataMovies.id}`}>

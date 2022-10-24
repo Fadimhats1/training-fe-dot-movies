@@ -4,7 +4,8 @@ import { useRouter } from 'next/router';
 import Card from '../../components/Card';
 import PageLayout from '../../components/Layout/PageLayout';
 import { LoadingOutlined } from '@ant-design/icons';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
+import { useStorage } from '../../src/hooks/useStorage';
+import { MoviesTypes } from '../../src/services/model/data.model';
 const colors = [
   'magenta',
   'red',
@@ -18,16 +19,17 @@ const colors = [
   'purple',
 ];
 
+var _dataDetailMovie: MoviesTypes; // case that happened in this page is async that is not syncrhonous while assign data to _dataDetailMovie, the _dataDetailMovie didn't declare first.
+
 const DetailMovie = () => {
-  const { data: movies } = useLocalStorage({ key: 'movies' });
+  const { data: movies } = useStorage({ key: 'movies' });
   const router = useRouter();
   const idDetail = parseInt(router.query.id as string);
 
-  let _dataDetailMovie: any;
   if (movies) {
-    movies.forEach((elementData: any) => {
+    movies.forEach((elementData: MoviesTypes) => {
       if (elementData.id == idDetail) {
-        _dataDetailMovie = elementData.movie_detail;
+        _dataDetailMovie = elementData;
       }
     });
   }
@@ -64,6 +66,15 @@ const DetailMovie = () => {
             </div>
           );
       }
+    );
+    const productionCountryLen = _dataDetailMovie.production_countries.length;
+    const PRODUCTION_COUNTRY = _dataDetailMovie.production_countries.map(
+      (element, index) => (
+        <p key={element.name}>
+          {element.name}
+          {index < productionCountryLen - 1 ? ',' : ''}
+        </p>
+      )
     );
     return (
       <PageLayout>
@@ -121,10 +132,13 @@ const DetailMovie = () => {
                 <div>
                   <h4 className="text-xl font-bold">Production:</h4>
                   <div className="flex gap-1">
-                    <p className="font-bold">Countries:</p> Japan
+                    <p className="font-bold">Countries:</p> {PRODUCTION_COUNTRY}
                   </div>
                   <div className="flex gap-1">
-                    <p className="font-bold">Release Date:</p> 2022-06-24
+                    <p className="font-bold">Release Date:</p>
+                    <p className="text-yellow-500 font-bold">
+                      {_dataDetailMovie.release_date.toString()}
+                    </p>
                   </div>
                 </div>
                 <div>
